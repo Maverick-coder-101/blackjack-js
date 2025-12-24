@@ -43,16 +43,18 @@ const playerInfoEl = document.getElementById("player-info-el")
 playerInfoEl.textContent = player.name + ": $" + player.chips
 
 function startGame() {
-    begin()
+    if (player.secondHand.length === 0) {
+        begin()
 
     for (let i = 0; i < deck.length; i++) {
         deckEl.textContent += deck[i] + " "
+    }
     }
 }
 
 function begin() {
     makeDeck()
-    //shuffle()
+    shuffle()
     secondHandEl.textContent = ""
     messageEl.textContent = " Want to play a round?"
     deckEl.textContent = "Deck: "
@@ -209,9 +211,25 @@ doubleDownBtn.addEventListener("click", function() {
 })
 
 splitBtn.addEventListener("click", function() {
-    if (player.secondHand.length === 0 && player.deck.length === 2) {
-        if (player.deck[0].substring(0,2) === player.deck[1].substring(0,2)) {
+    //find a way to clear the second hand deck
+    let tempCard1 = ""
+    let tempCard2 = ""
+    
+    if ((player.secondHand.length === 0 && player.deck.length === 2)) {
+        
+         tempCard1 = player.deck[0].substring(0,2)
+         tempCard2 = player.deck[1].substring(0,2)
+
+        if (tempCard1 === "K " || tempCard1 === "Q " || tempCard1 === "J ") {
+            tempCard1 = "10"
+        }
+        if (tempCard2 === "K " || tempCard2 === "Q " || tempCard2 === "J ") {
+            tempCard2 = "10"
+        }
+
+        if (tempCard1 === tempCard2) {
             player.secondHand.push(player.deck[1])
+            console.log(player.secondHand)
             player.deck.pop()
 
             player.sum -= (player.sum/2)
