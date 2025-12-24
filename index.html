@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="index.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+</head>
+<body>
+    <h1>Welcome to BLACKJACK</h1>
+    <p>Please enter the username you would like to use below:</p>
+    <p>Username: <input type="text" id="username-el"></p>
+    <p>You will be started with $100 credits to start the game.</p>
+    Modes:
+    <table>
+        <tr>
+            <td>Soft: </td>
+            <td><input type="radio" name="game_mode" value="soft" checked></td>
+        </tr>
+        <tr>
+            <td>Hard: </td>
+            <td><input type="radio" name="game_mode" value="hard"></td>
+        </tr>
+    </table> 
+    
+    <button id="start_game-btn" onclick="startGame()">ENTER GAME</button>
+    <p id="error-el"></p>
+
+    <script src="index.js"></script>
+</body>
+</html>
