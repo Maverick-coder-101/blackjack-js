@@ -46,9 +46,9 @@ function startGame() {
     if (player.secondHand.length === 0) {
         begin()
 
-    for (let i = 0; i < deck.length; i++) {
-        deckEl.textContent += deck[i] + " "
-    }
+        for (let i = 0; i < deck.length; i++) {
+            deckEl.textContent += deck[i] + " "
+        }
     }
 }
 
