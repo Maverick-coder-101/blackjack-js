@@ -12,6 +12,13 @@ const splitBtn = document.getElementById("split-btn")
 const secondHandEl = document.getElementById("second-hand-el")
 let hasBlackJack = false
 let isAlive = false
+
+let firstHandDone = false  // true for second hand to start 
+let secondHandDone = false
+let hasSecondHand = false  // updated in split btn 
+let splited = false // check for true black jack for payout
+//let acesSplited = false // after aces being plit no true
+
 let deck = []
 let theSum = 0
 
@@ -43,7 +50,7 @@ const playerInfoEl = document.getElementById("player-info-el")
 playerInfoEl.textContent = player.name + ": $" + player.chips
 
 function startGame() {
-    if (player.secondHand.length === 0) {
+    if (hasSecondHand === false) {
         begin()
 
         for (let i = 0; i < deck.length; i++) {
@@ -73,6 +80,8 @@ function begin() {
         messageEl.textContent = "You have BlackJack"
         hasBlackJack = true
         isAlive = false
+        firstHandDone = true
+        
     } else if (player.sum > 21) {
         messageEl.textContent = "Bust"
         hasBlackJack = false
@@ -131,7 +140,7 @@ function deal(someDeck, sum) {
 }
 
 hitBtn.addEventListener("click", function() {
-    if (isAlive === true && hasBlackJack === false) {
+    if ((isAlive === true && hasBlackJack === false)) {
            
         player.sum = deal(player.deck, player.sum)
         playerEl.textContent = "Player: "
@@ -215,7 +224,7 @@ splitBtn.addEventListener("click", function() {
     let tempCard1 = ""
     let tempCard2 = ""
     
-    if ((player.secondHand.length === 0 && player.deck.length === 2)) {
+    if ((hasSecondHand === false && player.deck.length === 2)) {
         
          tempCard1 = player.deck[0].substring(0,2)
          tempCard2 = player.deck[1].substring(0,2)
@@ -229,14 +238,33 @@ splitBtn.addEventListener("click", function() {
 
         if (tempCard1 === tempCard2) {
             player.secondHand.push(player.deck[1])
-            console.log(player.secondHand)
             player.deck.pop()
+            hasSecondHand = true
 
             player.sum -= (player.sum/2)
             player.secondHandSum = player.sum
-            secondHandEl.textContent = "Second hand: " + player.secondHand + " Sum: " + player.secondHandSum
+            //secondHandEl.textContent = "Second hand: " + player.secondHand + " Sum: " + player.secondHandSum
 
             playerEl.textContent = "Player: " + player.deck + " Sum: " + player.sum
+
+            //Add second card to the 1st hand
+            player.sum = deal(player.deck, player.sum)
+
+            playerEl.textContent = "Player: " + player.deck[0] + player.deck[1] +
+            " Sum: " + player.sum
+
+            //Add second card to the second hand
+            player.secondHandSum = deal(player.secondHand, player.secondHandSum)
+
+            // to be removed
+            secondHandEl.textContent = "Second hand: " + player.secondHand[0] + 
+            player.secondHand[1] + " Sum: " + player.secondHandSum
+
+            //update deck on display  to be removed
+            deckEl.textContent = "Deck: " 
+            for (let i = 0; i < deck.length; i++) {
+                deckEl.textContent += deck[i] + " "
+            }
         }
     }
 })
