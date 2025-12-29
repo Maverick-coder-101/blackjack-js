@@ -36,16 +36,6 @@ This project focuses on implementing real Blackjack game logic while keeping the
 
 No frameworks or libraries were used.
 
-
-## 🚀 How to Run
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/blackjack-js.git
-   ```
-2. Open `index.html` in your browser  
-   *(No server required)*
-
 ## 📌 Learning Goals
 
 This project was built to:
