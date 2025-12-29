@@ -80,6 +80,9 @@ function begin() {
     dealer.sum = 0
     player.deck = []
     player.secondHand = []
+    player.secondHandSum = 0
+    player.hasBlackJack = false
+    player.outcome2 = ""
     dealer.deck = []
     player.sum = deal(player.deck, player.sum)
     player.sum = deal(player.deck, player.sum)
