@@ -1,3 +1,5 @@
+Hit btn
+
 // Updates
 player sum: 29
 player first deck:
@@ -7,3 +9,12 @@ player first hand alive: true
 player first hand black jack: false
 player first hand done: false
 player outcome 1:
+
+
+
+
+//Screen what user sees
+
+deckEl.textContent = "Deck: "
+playerEl.textContent = ""
+secondHandEl.textContent = ""

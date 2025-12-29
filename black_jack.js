@@ -56,6 +56,7 @@ playerInfoEl.textContent = player.name + ": $" + player.chips
 
 function startGame() {
     if (hasSecondHand === false) {
+        player.firstHandDone = false
         begin()
 
         for (let i = 0; i < deck.length; i++) {
@@ -82,12 +83,14 @@ function begin() {
     dealer.sum = deal(dealer.deck, dealer.sum)
 
     if (player.sum === 21) {
+        messageEl.textContent = "You have BlackJack"
         player.outcome1 = "You have BlackJack"
         player.firstHandBlackJack = true
         player.firstHandAlive = false
         player.firstHandDone = true
         
     } else if (player.sum > 21) {
+        messageEl.textContent = "Bust"
         player.outcome1 = "Bust"
         player.firstHandBlackJack = false
         player.firstHandAlive = false
@@ -95,6 +98,7 @@ function begin() {
 
     } else {
         messageEl.textContent = "Continue?"
+        player.outcome1 = "Continue?"
         player.firstHandBlackJack = false
         player.firstHandAlive = true
      }
@@ -168,7 +172,7 @@ function hit(isAlive, hasBlackJack, alive2, hasBlackJack2) {
         playerEl.textContent += " Sum: " + player.sum
 
         //Update for the dealer/ house
-        updateStatus(player.sum, player.firstHandAlive, player.firstHandBlackJack, player.firstHandDone, player.outcome1)
+        updateStatus(player.sum)
     }
     } else {
         if (alive2 === true && hasBlackJack2 === false) {
@@ -186,7 +190,7 @@ function hit(isAlive, hasBlackJack, alive2, hasBlackJack2) {
         secondHandEl.textContent += " Sum: " + player.sum
 
         //Update for the dealer/ house
-        updateStatus(player.secondHandSum, player.secondHandAlive, player.secondHandBlackJack, player.secondHandDone, player.outcome2)
+        updateStatus(player.secondHandSum)
     }
     }
 
@@ -194,22 +198,42 @@ function hit(isAlive, hasBlackJack, alive2, hasBlackJack2) {
 }
 
 // must take a sum & an outcome  Return the outcome
-function updateStatus(sum, isAlive, hasBlackJack, handDone, outcome) {
-    if (sum === 21) {
-        outcome = "You have BlackJack"
-        isAlive = false
-        hasBlackJack = true
-        handDone = true
+function updateStatus(sum) {
+    if (player.firstHandDone === false) {
+        if (sum === 21) {
+        player.outcome1 = "You have BlackJack"
+        player.firstHandAlive = false
+        player.firstHandBlackJack = true
+        player.firstHandDone = true
 
-    } else if (sum < 21) {
-        outcome = "Continue?"
-        isAlive = true
-        hasBlackJack = false
-    } else {
-        outcome = "Bust"
-        isAlive = false
-        hasBlackJack = false
-        handDone = true
+        } else if (sum < 21) {
+            player.outcome1 = "Continue?"
+            player.firstHandAlive = true
+            player.firstHandBlackJack = false
+        } else {
+            player.outcome1 = "Bust"
+            player.firstHandAlive = false
+            player.firstHandBlackJack = false
+            player.firstHandDone = true
+        }
+    }  
+    if (hasSecondHand === true) {
+        if (sum === 21) {
+        player.outcome2 = "You have BlackJack"
+        player.secondHandAlive = false
+        player.secondHandBlackJack = true
+        player.secondHandDone = true
+
+        } else if (sum < 21) {
+            player.outcome2 = "Continue?"
+            player.secondHandAlive = true
+            player.secondHandBlackJack = false
+        } else {
+            player.outcome2 = "Bust"
+            player.secondHandAlive = false
+            player.secondHandBlackJack = false
+            player.secondHandDone = true
+        }
     }
 }
 
@@ -335,6 +359,9 @@ splitBtn.addEventListener("click", function() {
             secondHandEl.textContent = "Second hand: " + player.secondHand[0] + 
             player.secondHand[1] + " Sum: " + player.secondHandSum
 
+            updateStatus(player.sum)
+            updateStatus(player.secondHandSum)
+        
             //update deck on display  to be removed
             deckEl.textContent = "Deck: " 
             for (let i = 0; i < deck.length; i++) {
