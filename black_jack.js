@@ -10,17 +10,11 @@ const standBtn = document.getElementById("stand-btn")
 const doubleDownBtn = document.getElementById("double-down-btn")
 const splitBtn = document.getElementById("split-btn")
 const secondHandEl = document.getElementById("second-hand-el")
-let hasBlackJack = false
-let isAlive = false
+const checkBtn = document.getElementById("check-btn")
 
-let firstHandDone = false  // true for second hand to start 
-//let secondHandDone = false
 let hasSecondHand = false  // updated in split btn 
 let splited = false // check for true black jack for payout
 //let acesSplited = false // after aces being plit no true
-
-let outcome1 = ""
-let outcome2 = ""
 
 let deck = []
 let theSum = 0
@@ -32,7 +26,15 @@ let player = {
  deck: [],
  sum: 0,
  secondHand: [],
- secondHandSum: 0
+ secondHandSum: 0,
+ firstHandAlive: false,
+ secondHandAlive: false,
+ firstHandBlackJack: false,
+ secondHandBlackJack: false,
+ firstHandDone: false,
+ secondHandDone: false,
+ outcome1: "",
+ outcome2: ""
 }
 
 let dealer = {
@@ -80,21 +82,21 @@ function begin() {
     dealer.sum = deal(dealer.deck, dealer.sum)
 
     if (player.sum === 21) {
-        outcome1 = "You have BlackJack"
-        hasBlackJack = true
-        isAlive = false
-        firstHandDone = true
+        player.outcome1 = "You have BlackJack"
+        player.firstHandBlackJack = true
+        player.firstHandAlive = false
+        player.firstHandDone = true
         
     } else if (player.sum > 21) {
-        outcome1 = "Bust"
-        hasBlackJack = false
-        isAlive = false
-        firstHandDone = true
+        player.outcome1 = "Bust"
+        player.firstHandBlackJack = false
+        player.firstHandAlive = false
+        player.firstHandDone = true
 
     } else {
         messageEl.textContent = "Continue?"
-        hasBlackJack = false
-        isAlive = true
+        player.firstHandBlackJack = false
+        player.firstHandAlive = true
      }
     playerEl.textContent += player.deck[0] + player.deck[1] + " Sum: " + player.sum
     dealerEl.textContent += dealer.deck[0] + dealer.deck[1] + " Sum: " + dealer.sum
@@ -144,8 +146,14 @@ function deal(someDeck, sum) {
     return sum
 }
 
+
 hitBtn.addEventListener("click", function() {
-    if ((isAlive === true && hasBlackJack === false) && firstHandDone === false) {
+    hit(player.firstHandAlive, player.firstHandBlackJack, player.secondHandAlive, player.secondHandBlackJack)
+})
+
+function hit(isAlive, hasBlackJack, alive2, hasBlackJack2) {
+    if (player.firstHandDone === false) {
+        if (isAlive === true && hasBlackJack === false) {
            
         player.sum = deal(player.deck, player.sum)
         playerEl.textContent = "Player: "
@@ -160,45 +168,70 @@ hitBtn.addEventListener("click", function() {
         playerEl.textContent += " Sum: " + player.sum
 
         //Update for the dealer/ house
-        updateStatus()
+        updateStatus(player.sum, player.firstHandAlive, player.firstHandBlackJack, player.firstHandDone, player.outcome1)
     }
-})
+    } else {
+        if (alive2 === true && hasBlackJack2 === false) {
+           
+        player.secondHandSum = deal(player.secondHand, player.secondHandSum)
+        secondHandEl.textContent = "Second hand: "
+         deckEl.textContent = "Deck: "
+
+        for (let i = 0; i < deck.length; i++) {
+        deckEl.textContent += deck[i] + " "
+        }
+        for (let i = 0; i < player.secondHand.length; i++){
+            secondHandEl.textContent += player.secondHand[i]
+        }
+        secondHandEl.textContent += " Sum: " + player.sum
+
+        //Update for the dealer/ house
+        updateStatus(player.secondHandSum, player.secondHandAlive, player.secondHandBlackJack, player.secondHandDone, player.outcome2)
+    }
+    }
+
+     
+}
 
 // must take a sum & an outcome  Return the outcome
-function updateStatus() {
-    if (player.sum === 21) {
-        outcome1 = "You have BlackJack"
+function updateStatus(sum, isAlive, hasBlackJack, handDone, outcome) {
+    if (sum === 21) {
+        outcome = "You have BlackJack"
         isAlive = false
         hasBlackJack = true
-        firstHandDone = true
+        handDone = true
 
-    } else if (player.sum < 21) {
-        outcome1 = "Continue?"
+    } else if (sum < 21) {
+        outcome = "Continue?"
         isAlive = true
         hasBlackJack = false
     } else {
-        outcome1 = "Bust"
+        outcome = "Bust"
         isAlive = false
         hasBlackJack = false
-        firstHandDone = true
+        handDone = true
     }
 }
 
 standBtn.addEventListener("click", function() {
-    endTurn()
+     if (player.firstHandDone === false) {
+        endTurn(player.firstHandAlive, player.firstHandBlackJack, player.sum, player.outcome1, player.firstHandDone)
+    } else {
+        endTurn(player.secondHandAlive, player.secondHandBlackJack, player.secondHandSum, player.outcome2, player.secondHandDone)
+    }
 })
 
-function endTurn() {
-    if ((isAlive === true && hasBlackJack === false) && player.sum < 21){
-        if (player.sum > dealer.sum) {
-            outcome1 = "You have BlackJack"
-            firstHandDone = true
-        } else if (player.sum < dealer.sum) {
-            outcome1 = "You lost this round😭"
-            firstHandDone = true
+function endTurn(isAlive, hasBlackJack, sum, outcome, handDone) {
+    if ((isAlive === true && hasBlackJack === false) && sum < 21){
+        if (sum > dealer.sum) {
+            outcome = "You have BlackJack"
+            handDone = true
+        } else if (sum < dealer.sum) {
+            outcome = "You lost this round😭"
+            handDone = true
         } else {
-            outcome1 = "Push(Tie)"
-            firstHandDone = true
+            outcome = "Push(Tie)"
+            handDone = true
         }
         //Update so a player can not hit after
         isAlive = false
@@ -207,9 +240,20 @@ function endTurn() {
 }
 
 doubleDownBtn.addEventListener("click", function() {
+    if (player.firstHandDone === false) {
+        doubleDown(player.firstHandAlive, player.firstHandBlackJack, player.deck)
+    } else {
+        doubleDown(player.secondHandAlive, player.secondHandBlackJack, player.secondHand)
+    }
+})
+
+function doubleDown(isAlive, hasBlackJack, playerDeck) {
     //double the bet & take one more card & end turn
 
-    if ((isAlive === true && hasBlackJack === false) && (player.deck.length === 2)) {
+    // Receive isAlive, hasBlackJack, deck/hand sum 
+    if ((isAlive === true && hasBlackJack === false) && (playerDeck.length === 2)) {
+        if (player.firstHandDone === false) {
+        
         if (player.sum >= 9 && player.sum <=11) {
             player.sum = deal(player.deck, player.sum)
         playerEl.textContent = "Player: "
@@ -223,17 +267,32 @@ doubleDownBtn.addEventListener("click", function() {
         }
         playerEl.textContent += " Sum: " + player.sum
 
+        updateStatus(player.sum, player.firstHandAlive, player.firstHandBlackJack, player.firstHandDone, player.outcome1)
+        endTurn(player.firstHandAlive, player.firstHandBlackJack, player.sum, player.outcome1, player.firstHandDone)
+    } else {
+
+        if (player.secondHandSum >= 9 && player.secondHandSum <=11) {
+            player.secondHandSum = deal(player.deck, player.secondHandSum)
+        playerEl.textContent = "Player: "
+         deckEl.textContent = "Deck: "
+
+        for (let i = 0; i < deck.length; i++) {
+        deckEl.textContent += deck[i] + " "
+        }
+        for (let i = 0; i < player.deck.length; i++){
+            playerEl.textContent += player.deck[i]
+        }
+        playerEl.textContent += " Sum: " + player.secondHandSum
+
+        updateStatus(player.secondHandSum, player.secondHandAlive, player.secondHandBlackJack, player.secondHandDone, player.outcome2)
+        endTurn(player.secondHandAlive, player.secondHandBlackJack, player.secondHandSum, player.outcome2, player.secondHandDone)
+    }
         //Update for the dealer/ house
-        updateStatus()
-        endTurn()
         }
         
     }
-    
-    if (player.secondHand.length === 2) {
-
-    }
-})
+}
+}
 
 splitBtn.addEventListener("click", function() {
     //find a way to clear the second hand deck
@@ -256,6 +315,7 @@ splitBtn.addEventListener("click", function() {
             player.secondHand.push(player.deck[1])
             player.deck.pop()
             hasSecondHand = true
+            splited = true
 
             player.sum -= (player.sum/2)
             player.secondHandSum = player.sum
@@ -282,4 +342,25 @@ splitBtn.addEventListener("click", function() {
             }
         }
     }
+})
+
+checkBtn.addEventListener("click", function() {
+    console.clear()
+    console.log("has second hand: " + hasSecondHand)
+    console.log("player sum: " + player.sum)
+    console.log("Player second sum: " + player.secondHandSum)
+    console.log("player first hand alive: " + player.firstHandAlive)
+    console.log("player second hand alive: " + player.secondHandAlive)
+    console.log("player first hand black jack: " + player.firstHandBlackJack)
+    console.log("player second hand black jack: " + player.secondHandBlackJack)
+    console.log("player first hand done: " + player.firstHandDone)
+    console.log("player second hand done: " + player.secondHandDone)
+    console.log("player outcome 1: " + player.outcome1)
+    console.log("player outcome 2: " + player.outcome2)
+    console.log("dealer sum: " + dealer.sum)
+    console.log("dealer deck: " + dealer.deck)
+    console.log("player first deck: " + player.deck)
+    console.log("player second deck: " + player.secondHand)
+    // console.log()
+    // console.log()
 })

@@ -1,0 +1,9 @@
+// Updates
+player sum: 29
+player first deck:
+
+//Does not update
+player first hand alive: true
+player first hand black jack: false
+player first hand done: false
+player outcome 1:
