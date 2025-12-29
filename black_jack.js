@@ -79,6 +79,7 @@ function begin() {
     player.sum = 0
     dealer.sum = 0
     player.deck = []
+    player.secondHand = []
     dealer.deck = []
     player.sum = deal(player.deck, player.sum)
     player.sum = deal(player.deck, player.sum)
@@ -207,7 +208,7 @@ function updateFirstHandStatus() {
         player.firstHandBlackJack = true
         player.firstHandDone = true
 
-        if (hasSecondHand === true) {
+        if (hasSecondHand === true && player.secondHandBlackJack === false) {
             activeHand = 2
         } else {
             activeHand = 0
@@ -224,7 +225,7 @@ function updateFirstHandStatus() {
             player.firstHandBlackJack = false
             player.firstHandDone = true
 
-            if (hasSecondHand === true) {
+            if (hasSecondHand === true && player.secondHandBlackJack === false) {
             activeHand = 2
             } else {
                 activeHand = 0
@@ -264,6 +265,7 @@ function updateSecondHandSpiltStatus() {
         player.secondHandAlive = false
         player.secondHandBlackJack = true
         player.secondHandDone = true
+        hasSecondHand = false
 
     } else if (player.secondHandSum < 21) {
         player.outcome2 = "Continue?"
@@ -273,28 +275,78 @@ function updateSecondHandSpiltStatus() {
 }
 
 standBtn.addEventListener("click", function() {
-     if (player.firstHandDone === false) {
-        endTurn(player.firstHandAlive, player.firstHandBlackJack, player.sum, player.outcome1, player.firstHandDone)
-    } else {
-        endTurn(player.secondHandAlive, player.secondHandBlackJack, player.secondHandSum, player.outcome2, player.secondHandDone)
-    }
+     if (activeHand === 1) {
+        endTurnFirstHand()
+     } else if (activeHand === 2) {
+        endTurnSecondHand()
+     }
 })
 
-function endTurn(isAlive, hasBlackJack, sum, outcome, handDone) {
-    if ((isAlive === true && hasBlackJack === false) && sum < 21){
-        if (sum > dealer.sum) {
-            outcome = "You have BlackJack"
-            handDone = true
-        } else if (sum < dealer.sum) {
-            outcome = "You lost this round😭"
-            handDone = true
+function endTurnFirstHand() {
+
+    if ((player.firstHandAlive === true && player.firstHandBlackJack === false) && player.sum < 21){
+        if (player.sum > dealer.sum) {
+            player.outcome1 = "You have BlackJack"
+            player.firstHandAlive = false
+            player.firstHandBlackJack = true
+            player.firstHandDone = true
+
+            if (hasSecondHand === true) {
+                activeHand = 2
+            } else {
+                activeHand = 0
+            }
+            
+        } else if (player.sum < dealer.sum) {
+            player.outcome1 = "You lost this round"
+            player.firstHandAlive = false
+            player.firstHandBlackJack = false
+            player.firstHandDone = true
+
+            if (hasSecondHand === true) {
+            activeHand = 2
+            } else {
+                activeHand = 0
+            }
         } else {
-            outcome = "Push(Tie)"
-            handDone = true
+            player.outcome1 = "Push(Tie)"
+            player.firstHandAlive = false
+            player.firstHandBlackJack = false
+            player.firstHandDone = true
+
+            if (hasSecondHand === true) {
+            activeHand = 2
+            } else {
+                activeHand = 0
+            }
         }
-        //Update so a player can not hit after
-        isAlive = false
-        hasBlackJack = false
+    }
+}
+
+function endTurnSecondHand() {
+    if ((player.secondHandAlive === true && player.secondHandBlackJack === false) && player.secondHandSum < 21){
+        if (player.secondHandSum > dealer.sum) {
+            player.outcome2 = "You have BlackJack"
+            player.secondHandAlive = false
+            player.secondHandBlackJack = true
+            player.secondHandDone = true
+            hasSecondHand = false
+            activeHand = 0
+        }else if (player.secondHandSum < dealer.sum) {
+            player.outcome2 = "You lost this round"
+            player.secondHandAlive = false
+            player.secondHandBlackJack = false
+            player.secondHandDone = true
+            hasSecondHand = false
+            activeHand = 0
+        } else {
+            player.outcome2 = "Push(Tie)"
+            player.secondHandAlive = false
+            player.secondHandBlackJack = false
+            player.secondHandDone = true
+            hasSecondHand = false
+            activeHand = 0
+        }
     }
 }
 
