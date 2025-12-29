@@ -217,23 +217,23 @@ function updateFirstHandStatus() {
             activeHand = 0
         }
 
-        } else if (player.sum < 21) {
-            player.outcome1 = "Continue?"
-            player.firstHandAlive = true
-            player.firstHandBlackJack = false
-            activeHand = 1
-        } else {
-            player.outcome1 = "Bust"
-            player.firstHandAlive = false
-            player.firstHandBlackJack = false
-            player.firstHandDone = true
+    }else if (player.sum < 21) {
+        player.outcome1 = "Continue?"
+        player.firstHandAlive = true
+        player.firstHandBlackJack = false
+        activeHand = 1
+    }else {
+        player.outcome1 = "Bust"
+        player.firstHandAlive = false
+        player.firstHandBlackJack = false
+        player.firstHandDone = true
 
-            if (hasSecondHand === true && player.secondHandBlackJack === false) {
-            activeHand = 2
-            } else {
-                activeHand = 0
-            }
+        if (hasSecondHand === true && player.secondHandBlackJack === false) {
+        activeHand = 2
+        } else {
+            activeHand = 0
         }
+    }
 }
 
 function updateSecondHandStatus() {
@@ -354,58 +354,54 @@ function endTurnSecondHand() {
 }
 
 doubleDownBtn.addEventListener("click", function() {
-    if (player.firstHandDone === false) {
-        doubleDown(player.firstHandAlive, player.firstHandBlackJack, player.deck)
-    } else {
-        doubleDown(player.secondHandAlive, player.secondHandBlackJack, player.secondHand)
+    if (activeHand === 1) {
+        doubleDownFirstHand()
+    }
+    else if (activeHand === 2) {
+        doubleDownSecondHand()
     }
 })
 
-function doubleDown(isAlive, hasBlackJack, playerDeck) {
-    //double the bet & take one more card & end turn
-
-    // Receive isAlive, hasBlackJack, deck/hand sum 
-    if ((isAlive === true && hasBlackJack === false) && (playerDeck.length === 2)) {
-        if (player.firstHandDone === false) {
-        
+function doubleDownFirstHand() {
+    if ((player.firstHandAlive && player.firstHandBlackJack === false) && (player.deck.length === 2)) {
         if (player.sum >= 9 && player.sum <=11) {
             player.sum = deal(player.deck, player.sum)
-        playerEl.textContent = "Player: "
-         deckEl.textContent = "Deck: "
+            playerEl.textContent = "Player: "
+            deckEl.textContent = "Deck: "
 
-        for (let i = 0; i < deck.length; i++) {
-        deckEl.textContent += deck[i] + " "
-        }
-        for (let i = 0; i < player.deck.length; i++){
-            playerEl.textContent += player.deck[i]
-        }
-        playerEl.textContent += " Sum: " + player.sum
+            for (let i = 0; i < deck.length; i++) {
+            deckEl.textContent += deck[i] + " "
+            }
+            for (let i = 0; i < player.deck.length; i++){
+                playerEl.textContent += player.deck[i]
+            }
+            playerEl.textContent += " Sum: " + player.sum
 
-        updateStatus(player.sum, player.firstHandAlive, player.firstHandBlackJack, player.firstHandDone, player.outcome1)
-        endTurn(player.firstHandAlive, player.firstHandBlackJack, player.sum, player.outcome1, player.firstHandDone)
-    } else {
-
-        if (player.secondHandSum >= 9 && player.secondHandSum <=11) {
-            player.secondHandSum = deal(player.deck, player.secondHandSum)
-        playerEl.textContent = "Player: "
-         deckEl.textContent = "Deck: "
-
-        for (let i = 0; i < deck.length; i++) {
-        deckEl.textContent += deck[i] + " "
+            updateFirstHandStatus()
+            endTurnFirstHand()
         }
-        for (let i = 0; i < player.deck.length; i++){
-            playerEl.textContent += player.deck[i]
-        }
-        playerEl.textContent += " Sum: " + player.secondHandSum
-
-        updateStatus(player.secondHandSum, player.secondHandAlive, player.secondHandBlackJack, player.secondHandDone, player.outcome2)
-        endTurn(player.secondHandAlive, player.secondHandBlackJack, player.secondHandSum, player.outcome2, player.secondHandDone)
-    }
-        //Update for the dealer/ house
-        }
-        
     }
 }
+
+function doubleDownSecondHand() {
+    if ((player.secondHandAlive && player.secondHandBlackJack === false) && (player.secondHand.length === 2)) {
+        if (player.secondHandSum >= 9 && player.secondHandSum <=11) {
+            player.secondHandSum = deal(player.secondHand, player.secondHandSum)
+            secondHandEl.textContent = "Second hand: "
+            deckEl.textContent = "Deck: "
+
+            for (let i = 0; i < deck.length; i++) {
+            deckEl.textContent += deck[i] + " "
+            }
+            for (let i = 0; i < player.secondHand.length; i++){
+                secondHandEl.textContent += player.secondHand[i]
+            }
+            secondHandEl.textContent += " Sum: " + player.secondHandSum
+
+            updateSecondHandStatus()
+            endTurnSecondHand()
+        }
+    }
 }
 
 splitBtn.addEventListener("click", function() {
