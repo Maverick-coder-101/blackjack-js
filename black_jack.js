@@ -1,7 +1,6 @@
 const suits = ["♦", "♥", "♠", "♣"]
 const ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 const messageEl = document.getElementById("message-el")
-const deckEl = document.getElementById("deck-el")
 const cardsEl = document.getElementById("cards-el")
 const playerEl = document.getElementById("player-el")
 const dealerEl = document.getElementById("dealer-el")
@@ -47,7 +46,7 @@ function makeDeck() {
     deck = []
     for (let i = 0; i < ranks.length; i++) {
     for (let j = 0; j < suits.length; j++) {
-        deck.push(ranks[i] + " of " + suits[j] + ", ")
+        deck.push(ranks[i] + " of " + suits[j] + " ")
     }
 }
 }
@@ -59,16 +58,11 @@ function startGame() {
     if (hasSecondHand === false) {
         player.firstHandDone = false
         activeHand = 1
-
         begin()
-
-        for (let i = 0; i < deck.length; i++) {
-            deckEl.textContent += deck[i] + " "
-        }
         dealerPlay()
         
     playerEl.textContent += player.deck[0] + player.deck[1] + " Sum: " + player.sum
-    dealerEl.textContent += dealer.deck + " Sum: " + dealer.sum
+    dealerEl.textContent += dealer.deck[0] + " ❓"
     }
     checkOutcomeFirstHand()
 }
@@ -78,7 +72,6 @@ function begin() {
     shuffle()
     secondHandEl.textContent = ""
     messageEl.textContent = " Want to play a round?"
-    deckEl.textContent = "Deck: "
     playerEl.textContent = "Player: "
     dealerEl.textContent = "Dealer: "
     player.sum = 0
@@ -164,11 +157,7 @@ hitBtn.addEventListener("click", function() {
            
             player.sum = deal(player.deck, player.sum)
             playerEl.textContent = "Player: "
-            deckEl.textContent = "Deck: "
 
-            for (let i = 0; i < deck.length; i++) {
-            deckEl.textContent += deck[i] + " "
-            }
             for (let i = 0; i < player.deck.length; i++){
                 playerEl.textContent += player.deck[i]
             }
@@ -182,11 +171,7 @@ hitBtn.addEventListener("click", function() {
            
             player.secondHandSum = deal(player.secondHand, player.secondHandSum)
             secondHandEl.textContent = "Second hand: "
-            deckEl.textContent = "Deck: "
 
-            for (let i = 0; i < deck.length; i++) {
-            deckEl.textContent += deck[i] + " "
-            }
             for (let i = 0; i < player.secondHand.length; i++){
                 secondHandEl.textContent += player.secondHand[i]
             }
@@ -407,11 +392,7 @@ function doubleDownFirstHand() {
         if (player.sum >= 9 && player.sum <=11) {
             player.sum = deal(player.deck, player.sum)
             playerEl.textContent = "Player: "
-            deckEl.textContent = "Deck: "
 
-            for (let i = 0; i < deck.length; i++) {
-            deckEl.textContent += deck[i] + " "
-            }
             for (let i = 0; i < player.deck.length; i++){
                 playerEl.textContent += player.deck[i]
             }
@@ -431,11 +412,7 @@ function doubleDownSecondHand() {
         if (player.secondHandSum >= 9 && player.secondHandSum <=11) {
             player.secondHandSum = deal(player.secondHand, player.secondHandSum)
             secondHandEl.textContent = "Second hand: "
-            deckEl.textContent = "Deck: "
 
-            for (let i = 0; i < deck.length; i++) {
-            deckEl.textContent += deck[i] + " "
-            }
             for (let i = 0; i < player.secondHand.length; i++){
                 secondHandEl.textContent += player.secondHand[i]
             }
@@ -494,12 +471,6 @@ splitBtn.addEventListener("click", function() {
             activeHand = 1
             updateFirstHandStatus()
             updateSecondHandSpiltStatus()
-        
-            //update deck on display  to be removed
-            deckEl.textContent = "Deck: " 
-            for (let i = 0; i < deck.length; i++) {
-                deckEl.textContent += deck[i] + " "
-            }
         }
     }
 
@@ -513,30 +484,31 @@ function dealerPlay() {
     }
 }
 
-checkBtn.addEventListener("click", function() {
-    console.clear()
-    //checkOutcomeFirstHand()
-    //checkOutSecondHand()
-    console.log("The outcome:: " + player.outcome1)
-    console.log("The outcome:: " + player.outcome2)
-   console.log("has second hand: " + hasSecondHand)
-    console.log("player sum: " + player.sum)
-   console.log("Player second sum: " + player.secondHandSum)
-    console.log("player first hand alive: " + player.firstHandAlive)
-   console.log("player second hand alive: " + player.secondHandAlive)
-    console.log("player first hand black jack: " + player.firstHandBlackJack)
-    console.log("player second hand black jack: " + player.secondHandBlackJack)
-    console.log("player first hand done: " + player.firstHandDone)
-    console.log("player second hand done: " + player.secondHandDone)
-    console.log("player outcome 1: " + player.outcome1)
-    console.log("player outcome 2: " + player.outcome2)
-    console.log("dealer sum: " + dealer.sum)
-    console.log("dealer deck: " + dealer.deck)
-    console.log("player first deck: " + player.deck)
-    console.log("player second deck: " + player.secondHand)
-    console.log("Active hand: " + activeHand)
-    // console.log()
-})
+// Use to troubleshoot
+// checkBtn.addEventListener("click", function() {
+//     console.clear()
+//     checkOutcomeFirstHand()
+//     checkOutSecondHand()
+//     console.log("The outcome:: " + player.outcome1)
+//     console.log("The outcome:: " + player.outcome2)
+//    console.log("has second hand: " + hasSecondHand)
+//     console.log("player sum: " + player.sum)
+//    console.log("Player second sum: " + player.secondHandSum)
+//     console.log("player first hand alive: " + player.firstHandAlive)
+//    console.log("player second hand alive: " + player.secondHandAlive)
+//     console.log("player first hand black jack: " + player.firstHandBlackJack)
+//     console.log("player second hand black jack: " + player.secondHandBlackJack)
+//     console.log("player first hand done: " + player.firstHandDone)
+//     console.log("player second hand done: " + player.secondHandDone)
+//     console.log("player outcome 1: " + player.outcome1)
+//     console.log("player outcome 2: " + player.outcome2)
+//     console.log("dealer sum: " + dealer.sum)
+//     console.log("dealer deck: " + dealer.deck)
+//     console.log("player first deck: " + player.deck)
+//     console.log("player second deck: " + player.secondHand)
+//     console.log("Active hand: " + activeHand)
+//     // console.log()
+// })
 
 function checkOutcomeFirstHand() {
     if (activeHand === 0) {
@@ -551,8 +523,7 @@ function checkOutcomeFirstHand() {
         } else {
             player.outcome1 = "Push tie"
         }
-
-        messageEl.textContent = player.outcome1 + "1"
+        messageEl.textContent = player.outcome1
     }
 }
 
@@ -574,8 +545,8 @@ function checkOutSecondHand() {
             player.outcome2 = "Push tie"
             splited = false
         }
-        let temp = messageEl.textContent
 
-        messageEl.textContent = " 1: " + temp + " | 2: " + player.outcome2 + "2"
+        let temp = messageEl.textContent
+        messageEl.textContent = " 1: " + temp + " | 2: " + player.outcome2 
     }
 }
