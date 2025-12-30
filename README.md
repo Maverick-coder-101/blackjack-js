@@ -1,7 +1,7 @@
 # Blackjack JS 🃏
 
 A browser-based Blackjack game built using **HTML, CSS, and vanilla JavaScript**.  
-This project focuses on implementing real Blackjack game logic while keeping the code clean, readable, and beginner-friendly.
+This project focuses on implementing real Blackjack game logic and it is beginner-friendly.
 
 ## 🎯 Features
 
@@ -11,20 +11,18 @@ This project focuses on implementing real Blackjack game logic while keeping the
   - Hit
   - Stand
   - Double Down
-  - Split (including split aces rules)
+  - Split 
 - Dealer logic following standard Blackjack rules
 - Automatic hand value calculation with Ace handling (1 or 11)
-- Multiple hands after splitting
+- Multiple hands after splitting *2
 - Simple and clean UI
 
 ## 🧠 Game Rules Implemented
 
-- Blackjack pays normally (A + 10-value card)
 - Dealer stands on 17
 - Aces can be worth **1 or 11**
 - After splitting:
   - Each hand is played separately
-  - Split aces receive one card only (no hit)
   - Double down rules apply correctly
 - Dealer plays only after all player hands are completed
 
